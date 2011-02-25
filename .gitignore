@@ -1,0 +1,7 @@
+.*.sw*
+*~
+BezierPathCreator/lib/impact
+BezierPathCreator/lib/weltmeister
+BezierPathCreator/tools
+BezierPathCreator/weltmeister.html
+BezierPathCreator/ToDoList.txt
