@@ -1,0 +1,76 @@
+Used to allow entities to follow a bezier line type of pathway. Requires the Impact Javascript Game Engine (http://impactjs.com/)
+
+There are 2 parts to this: 
+  (1) The BezierPathCreator Utility which allows for creation of bezier paths for entities.
+  (2) A bezierpath plugin which can be used in games to control movement of an entity along the created path.
+
+------------------------------------
+
+BezierPathCreator
+- Download and include the impact library as you typically would for a game. 
+- Optionally include the welmeister library and html file to experiment with the path on your levels. 
+- Hit copy to clipboard within the utility to generate path nodes. 
+- This is also available on-line at www.drlaidlaw.com/utilities/BezierPath/
+
+-------------------------------------
+
+bezierpath plugin
+
+How to use:
+Create a new plugins folder if one does not exist: lib/plugins
+Drop the bezierpath folder into the directory.
+Within the main.js file, require: 'plugins.bezierpath.bezierpath'
+
+Within your entity's init function create the origin, add pathNodes, and create the path, e.g.:
+
+  init: function( x, y, settings ) {
+    this.parent( x, y, settings );
+    this.addAnim( 'idle', 1, [0] );
+    this.origin = {x: x, y: y};
+    pathNodes = [ { bump: {x: 0, y: 0} }, { pull1: {x: 5, y: 134}, pull2: {x: 17, y: 272}, bump: {x: 85, y: 350}, inc: 0.02 }, { pull1: {x: 194, y: 491}, pull2: {x: 281, y: 478}, bump: {x: 253, y: 215}, inc: 0.02 }, { pull1: {x: 230, y: 118}, pull2: {x: 150, y: 101}, bump: {x: 89, y: 187}, inc: 0.02 }, { pull1: {x: 44, y: 267}, pull2: {x: 138, y: 321}, bump: {x: 209, y: 304}, inc: 0.02 }, { pull1: {x: 422, y: 276}, pull2: {x: 436, y: 350}, bump: {x: 599, y: 272}, inc: 0.02 } ];
+    this.bezPath = new ig.Bezierpath(pathNodes, {cycle: 1, oscillate: false});
+  },
+
+Within your entity's update function, add the code to find the new position:
+
+  update: function(){
+    newPos = this.bezPath.nextPos();
+    this.pos.x = this.origin.x + newPos.x;
+    this.pos.y = this.origin.y + newPos.y;
+  },
+
+Note that all positions on the path are relative to the starting point on the path which is always 0,0. The origin is the original location of the entity as derived from Weltmeister or from being spawned.
+
+There are several settings for modifying behavior along the path.
+Examples:
+
+- Pause entity
+    this.BezPath.paused = true;
+    //Default is false.
+
+- Continuously loop entity on path
+    this.BezPath.loop = true;
+    //Default is false.
+
+- Cycle entity - determine the number of times the entity should follow the path
+    this.BezPath.cycle = 5;
+    //Will cause the entity to follow the path from endpoint to endpoint 5 times.
+    //Default is 1.
+
+- Oscillate entity - cause entity to reverse its movement along pathway once it reaches an endpoint.
+    this.oscillate = true;
+    //Default is false.
+
+- Direction - tracks the entity's current direction of movement along the path, either forward of backward.
+
+- pathCompleted - a boolean which is set by bezier path initially as false. Once the entity has completed all cycles, this becomes true. This can be checked within the entity's update function to determine if it has completed its journey along the path and for example be destroyed. e.g.:
+  update: function(){
+    newPos = this.bezPath.nextPos();
+    this.pos.x = this.origin.x + newPos.x;
+    this.pos.y = this.origin.y + newPos.y;
+    if (this.bezPath.pathCompleted)
+      this.kill();
+    this.parent();
+  },
+
+
