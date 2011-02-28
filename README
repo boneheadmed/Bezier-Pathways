@@ -11,6 +11,7 @@ BezierPathCreator
 - Optionally include the welmeister library and html file to experiment with the path on your levels. 
 - Hit copy to clipboard within the utility to generate path nodes. 
 - This is also available on-line at www.drlaidlaw.com/utilities/BezierPath/
+- Contains Zeroclipboad (http://code.google.com/p/zeroclipboard/) and jquery alert dialogs (http://abeautifulsite.net/blog/2008/12/jquery-alert-dialogs/).
 
 -------------------------------------
 
